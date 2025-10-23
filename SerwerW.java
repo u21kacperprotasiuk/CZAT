@@ -37,24 +37,24 @@ public class SerwerW {
     }
 
     // rozsyłanie wiadomości
-   public static synchronized void rozeslij(String msg, WatekKlienta nadawca) {
+  public static synchronized void rozeslij(String msg, WatekKlienta nadawca) {
     for (WatekKlienta w : klienci) {
         w.wyslij("MSG:" + nadawca.login + ":" + msg);
     }
 
+
+
     }
 
     // wysłanie prywatnej wiadomości
-    public static synchronized void wyslijPrywatna(String doKogo, String msg, WatekKlienta nadawca) {
-        for (WatekKlienta w : klienci) {
-            if (w.login.equals(doKogo)) {
-                w.wyslij("PRIV:" + nadawca.login + ":" + msg);
-                nadawca.wyslij("PRIV:" + nadawca.login + "->" + doKogo + ":" + msg);
-                return;
-            }
+    public static synchronized void wyslijPrywatna(String cel, String msg, WatekKlienta nadawca) {
+    for (WatekKlienta w : klienci) {
+        if (w.login.equals(cel) || w == nadawca) {
+            w.wyslij("PRIV:" + nadawca.login + ":" + cel + ":" + msg);
         }
-        nadawca.wyslij("ERROR:Nie znaleziono użytkownika " + doKogo);
     }
+}
+
 
     // usuwanie klienta po rozłączeniu
     public static synchronized void usunKlienta(WatekKlienta w) {
