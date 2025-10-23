@@ -3,7 +3,6 @@ import java.net.*;
 import java.util.Vector;
 
 public class SerwerW {
-    // lista wszystkich klientów
     static Vector<WatekKlienta> klienci = new Vector<>();
 
     public static void main(String[] args) {
@@ -23,7 +22,6 @@ public class SerwerW {
         }
     }
 
-    // wysyłanie listy użytkowników do wszystkich
     public static synchronized void wyslijListeUzytkownikow() {
         StringBuilder sb = new StringBuilder();
         sb.append("USERS:");
@@ -36,7 +34,6 @@ public class SerwerW {
         }
     }
 
-    // rozsyłanie wiadomości
   public static synchronized void rozeslij(String msg, WatekKlienta nadawca) {
     for (WatekKlienta w : klienci) {
         w.wyslij("MSG:" + nadawca.login + ":" + msg);
@@ -46,7 +43,6 @@ public class SerwerW {
 
     }
 
-    // wysłanie prywatnej wiadomości
     public static synchronized void wyslijPrywatna(String cel, String msg, WatekKlienta nadawca) {
     for (WatekKlienta w : klienci) {
         if (w.login.equals(cel) || w == nadawca) {
@@ -56,10 +52,10 @@ public class SerwerW {
 }
 
 
-    // usuwanie klienta po rozłączeniu
     public static synchronized void usunKlienta(WatekKlienta w) {
         klienci.remove(w);
         System.out.println(w.login + " rozłączony.");
         wyslijListeUzytkownikow();
     }
 }
+
