@@ -28,14 +28,12 @@ public class KlientW extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
-        // === PANEL CZATU ===
         area = new JTextPane();
         area.setEditable(false);
         area.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         area.setBackground(Color.WHITE);
         doc = area.getStyledDocument();
 
-        // style tekstu
         stylePublic = doc.addStyle("public", null);
         StyleConstants.setForeground(stylePublic, Color.BLACK);
         StyleConstants.setFontSize(stylePublic, 14);
@@ -55,7 +53,6 @@ public class KlientW extends JFrame {
         JScrollPane scrollChat = new JScrollPane(area);
         scrollChat.setBorder(new TitledBorder("Czat"));
 
-        // === PANEL UŻYTKOWNIKÓW ===
         usersModel = new DefaultListModel<>();
         users = new JList<>(usersModel);
         users.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -66,8 +63,7 @@ public class KlientW extends JFrame {
         JScrollPane scrollUsers = new JScrollPane(users);
         scrollUsers.setPreferredSize(new Dimension(150, 0));
         scrollUsers.setBorder(new TitledBorder("Użytkownicy"));
-
-        // === DÓŁ: POLE TEKSTOWE + PRZYCISK ===
+        
         JPanel bottom = new JPanel(new BorderLayout(5, 5));
         input = new JTextField();
         input.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -87,23 +83,19 @@ public class KlientW extends JFrame {
         add(scrollUsers, BorderLayout.EAST);
         add(bottom, BorderLayout.SOUTH);
 
-        // === Zdarzenia ===
         sendBtn.addActionListener(e -> wyslij());
         input.addActionListener(e -> wyslij());
 
-        // === Połączenie z serwerem ===
         try {
             socket = new Socket(host, port);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
 
-            // login
             if (in.readLine().equals("PODAJ_LOGIN:")) {
                 login = JOptionPane.showInputDialog(this, "Podaj login:");
                 out.println(login);
             }
 
-            // nasłuch
             new Thread(() -> {
                 try {
                     String line;
@@ -120,7 +112,6 @@ public class KlientW extends JFrame {
                                 boolean prywatna = true;
                                 pokazWiadomosc(p[1], p[3], prywatna);
 
-                                // automatycznie ustawia odbiorcę prywatnego
                                 SwingUtilities.invokeLater(() -> {
                                     for (int i = 0; i < usersModel.size(); i++) {
                                         if (usersModel.getElementAt(i).equals(p[1])) {
@@ -130,7 +121,6 @@ public class KlientW extends JFrame {
                                     }
                                 });
 
-                                // powiadomienie dźwiękowe
                                 Toolkit.getDefaultToolkit().beep();
                             }
                         } else if (line.startsWith("USERS:")) {
@@ -161,10 +151,8 @@ public class KlientW extends JFrame {
         String target = users.getSelectedValue();
         if (target == null || target.equals("ALL")) {
             out.println("MSG:" + txt);
-            // publiczna – dodana tylko przez serwer, nie lokalnie
         } else {
             out.println("PRIV:" + target + ":" + txt);
-            // prywatna – dodana tylko przez serwer, nie lokalnie
         }
 
         input.setText("");
@@ -197,3 +185,4 @@ public class KlientW extends JFrame {
         SwingUtilities.invokeLater(() -> new KlientW("localhost", 2217).setVisible(true));
     }
 }
+
